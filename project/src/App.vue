@@ -1,6 +1,10 @@
 <template>
   <div class="container">
     <h1>Страница с постами</h1>
+    <my-input
+    v-model="searchQuery"
+    placeholder="Search...."
+    />
     <div class="container__btns">
     <my-button @click="showDialog">Создать пост</my-button>
     <my-select 
@@ -12,7 +16,7 @@
     <post-form @create="createPost" />
     </my-dialog>
     <post-list
-    :posts="sortedPosts" 
+    :posts="sortedAndSearchedPosts" 
     @remove="removePost"
     v-if="!isPostsLoading"
     />
@@ -21,12 +25,13 @@
 </template>
 
 <script>
+import axios from 'axios'
 import PostForm from './components/PostForm.vue'
 import PostList from './components/PostList.vue'
 import MyButton from './components/UI/MyButton.vue'
 import MyDialog from './components/UI/MyDialog.vue'
-import axios from 'axios'
 import MySelect from './components/UI/MySelect.vue'
+import MyInput from './components/UI/MyInput.vue'
 
 export default {
   components: {
@@ -35,6 +40,7 @@ export default {
     MyDialog,
     MyButton,
     MySelect,
+    MyInput
   },
   data() {
     return {
@@ -42,6 +48,7 @@ export default {
       dialogVisible: false,
       isPostsLoading: false,
       selectedSort: '',
+      searchQuery: '',
       sortOptions: [
         {value: 'title', name: 'По названию'},
         {value: 'body', name: 'По описанию'}
@@ -76,9 +83,10 @@ export default {
   },
   computed: {
     sortedPosts() {
-      return [...this.posts].sort((post1, post2) =>{
-        return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
-      })
+      return [...this.posts].sort((post1, post2) => post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
+    },
+    sortedAndSearchedPosts() {
+      return this.sortedPosts.filter((post) => post.title.includes(this.searchQuery))
     }
   }
 }
