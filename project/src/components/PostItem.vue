@@ -8,8 +8,15 @@
       </div>
       <div class post_buttons>
         <my-button
+        @click="$router.push(`/posts/${post.id}`)"
+        >
+        Open
+        </my-button>
+        <my-button
         @click="$emit('remove', post)"
-        >Delete</my-button>
+        >
+        Delete
+        </my-button>
       </div>
     </div>
   </div>
@@ -36,5 +43,9 @@ import MyButton from './UI/MyButton.vue'
   display:flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.post_buttons {
+  display: flex;
 }
 </style>
